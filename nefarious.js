@@ -18,7 +18,14 @@ var shapeEnclosureConstructor = function() {
 	this.height = 200;
 	this.dx = this.cx - this.width/2;
 	this.dy = this.cy - this.height/2;
-	this.rot = 0;
+	this.rotation = new function() {
+		this.angle = 0;
+		this.v = 0;
+		this.f = 0.98;
+		this.acc = 1;
+		this.maxv = 5;
+	};
+	//this.rotation = new this.rotationConstructor();
 };
 
 window.addEventListener("resize", onResize);
@@ -53,17 +60,24 @@ onResize();
 
 function rotateEnclosure() {
 	if (userControl[userKeys.rotateLeft]) {
-		shapeEnclosure.rot--;
-	} else if (userControl[userKeys.rotateRight]) {
-		shapeEnclosure.rot++;
+		if (Math.abs(shapeEnclosure.rotation.v) < shapeEnclosure.rotation.maxv) {
+			shapeEnclosure.rotation.v -= shapeEnclosure.rotation.acc;
+		}
+	} 
+	if (userControl[userKeys.rotateRight]) {
+		if (Math.abs(shapeEnclosure.rotation.v) < shapeEnclosure.rotation.maxv) {
+			shapeEnclosure.rotation.v += shapeEnclosure.rotation.acc;
+		}
 	}
+	shapeEnclosure.rotation.v *= shapeEnclosure.rotation.f;
+	shapeEnclosure.rotation.angle += shapeEnclosure.rotation.v;
 }
 
 function drawEnclosure() {
 	ctx.beginPath();
 	ctx.save();
 	ctx.translate(shapeEnclosure.cx, shapeEnclosure.cy);
-	ctx.rotate(shapeEnclosure.rot / 180 * Math.PI);
+	ctx.rotate(shapeEnclosure.rotation.angle / 180 * Math.PI);
 	ctx.lineWidth = shapeCreator.thickness;
 	ctx.rect(-1*shapeEnclosure.cx + shapeEnclosure.dx, -1*shapeEnclosure.cy + shapeEnclosure.dy, shapeEnclosure.width, shapeEnclosure.height);
 	ctx.stroke();
@@ -72,7 +86,7 @@ function drawEnclosure() {
 	//console.log("yo");
 }
 
-function frame () {
+function frame() {
 	requestAnimationFrame(frame);
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	//console.log("yo");
