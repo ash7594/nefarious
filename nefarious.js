@@ -1,44 +1,44 @@
-var global;
+var global, shapeCreator, shapeEnclosure;
 var canvas = document.getElementById("canvas"),
 	ctx = canvas.getContext("2d");
 
-window.addEventListener("resize", resizeDetect);
+var shapeEnclosureConstructor = function() {
+	this.cx = global.windowWidth/2;
+	this.cy = global.windowHeight/2;
+	this.width = 200;
+	this.height = 200;
+	this.dx = this.cx - this.width/2;
+	this.dy = this.cy - this.height/2;
+};
 
-function resizeDetect() {
-    global = {
-        "windowWidth" : {
-            "full" : window.innerWidth,
-            "half" : window.innerWidth/2,
-    	},
-    	"windowHeight" : {
-        	"full" : window.innerHeight,
-        	"half" : window.innerHeight/2,
-    	},
+window.addEventListener("resize", onResize);
+
+function onResize() {
+	global = {
+		"windowWidth" : window.innerWidth,
+		"windowHeight" : window.innerHeight,
+		"lesserDimension" : (window.innerHeight < window.innerWidth) ? window.innerHeight : window.innerWidth,
 	};
 
-	canvas.width = global.windowWidth.full;
-	canvas.height = global.windowHeight.full;
+	shapeCreator = {
+		"length" : 200,
+		"color" : "rgb(0,0,0)",
+		"thickness" : 10,
+	};
+
+	shapeEnclosure = new shapeEnclosureConstructor();
+
+	canvas.width = global.windowWidth;
+	canvas.height = global.windowHeight;
 }
 
-resizeDetect();
-
-var shapeCreator = {
-	"length" : 200,
-	"color" : "rgb(0,0,0)",
-	"thickness" : 10,
-};
-
-var shapeEnclosure = {
-	"x" : global.windowWidth,
-	"y" : global.windowHeight,
-	"width" : 200,
-	"height" : 200,
-};
+onResize();
 
 function drawEnclosure() {
 	ctx.lineWidth = shapeCreator.thickness;
-	ctx.rect(shapeEnclosure.x.half, shapeEnclosure.y.half, shapeEnclosure.width, shapeEnclosure.height);
+	ctx.rect(shapeEnclosure.dx, shapeEnclosure.dy, shapeEnclosure.width, shapeEnclosure.height);
 	ctx.stroke();
+	//console.log("yo");
 }
 
 function frame () {
