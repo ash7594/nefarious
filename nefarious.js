@@ -1,4 +1,4 @@
-var global, shapeCreator, shapeEnclosure;
+var global, shapeCreator, shapeEnclosure, entity;
 var userControl = [];
 var userKeys = {
 	"left" : 37,
@@ -23,9 +23,22 @@ var shapeEnclosureConstructor = function() {
 		this.v = 0;
 		this.f = 0.98;
 		this.acc = 1;
-		this.maxv = 5;
+		this.maxv = 10;
 	};
 	//this.rotation = new this.rotationConstructor();
+};
+
+var entityConstructor = function() {
+	this.x = global.windowWidth/2;
+	this.y = global.windowHeight/2;
+	this.color = "rgb(0,0,0)";
+	this.r = 5;
+	this.vx = 0;
+	this.vy = 0;
+	this.vel = Math.random()*11 - 5;
+	//this.f = 1;
+	this.acc = 1;
+	this.angle = Math.random()*360;
 };
 
 window.addEventListener("resize", onResize);
@@ -51,6 +64,7 @@ function onResize() {
 	};
 
 	shapeEnclosure = new shapeEnclosureConstructor();
+	entity = new entityConstructor();
 
 	canvas.width = global.windowWidth;
 	canvas.height = global.windowHeight;
@@ -73,6 +87,22 @@ function rotateEnclosure() {
 	shapeEnclosure.rotation.angle += shapeEnclosure.rotation.v;
 }
 
+function entityMotion() {
+	entity.x += entity.vel*Math.cos(entity.angle * Math.PI / 180);
+	entity.y += entity.vel*Math.sin(entity.angle * Math.PI / 180);
+}
+
+function entityCollision() {
+	
+}
+
+function drawEntity() {
+	ctx.beginPath();
+	ctx.arc(entity.x, entity.y, entity.r, 0, 2*Math.PI);
+	ctx.fill();
+	ctx.closePath();
+}
+
 function drawEnclosure() {
 	ctx.beginPath();
 	ctx.save();
@@ -83,7 +113,6 @@ function drawEnclosure() {
 	ctx.stroke();
 	ctx.restore();
 	ctx.closePath();
-	//console.log("yo");
 }
 
 function frame() {
@@ -91,8 +120,10 @@ function frame() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	//console.log("yo");
 	rotateEnclosure();
+	entityMotion();
+
 	drawEnclosure();
+	drawEntity();
 }
 
 frame();
-//setInterval(frame, 17);
