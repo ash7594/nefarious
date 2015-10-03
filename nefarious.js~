@@ -153,15 +153,6 @@ function isPaddleHit() {
 	}
 }
 
-function isPaddle2Hit() {
-	var endAngle = paddle2.startAngle + paddle2.widthAngle;
-	if ((endAngle < 360 && entity.angle >= paddle2.startAngle && entity.angle <= endAngle) || (endAngle >= 360 && (entity.angle >= paddle2.startAngle || entity.angle <= endAngle%360))) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
 function entityCollision() {
 	var dx = entity.x-shapeEnclosure.cx;
 	var dy = entity.y-shapeEnclosure.cy;
@@ -182,22 +173,7 @@ function entityCollision() {
 		} else {
 			entityDie();
 		}
-	} else if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))+entity.r+(paddle2.thick/2) >= paddle2.r) {
-
-		//console.log("collide");
-		if (isPaddle2Hit()) {
-			var angle = Math.atan2(dy,dx) * 180 / Math.PI;
-			angle += 360;
-			angle %= 360;
-			if (entity.angle > angle)
-			//console.log(angle+" "+entity.angle);
-			entity.angle = 2*angle - entity.angle;
-			entity.angle += 180 + 360;
-			entity.angle %= 360;
-			entity.x = entity.px;
-			entity.y = entity.py;
-		}
-	}
+	}// else if (Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)))
 }
 
 function entityDie() {
